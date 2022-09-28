@@ -2,7 +2,7 @@
 
 The report is in report.md
 
-## Run code in main.go
+## Run the code in main.go
 
 ```powershell
 go run .
