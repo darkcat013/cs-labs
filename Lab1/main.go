@@ -36,7 +36,7 @@ func main() {
 	c = ciphers.Playfair{
 		Key: "PLAYFAIR",
 	}
-	enc = c.EncryptMessage("VINE IARNA")
+	enc = c.EncryptMessage("HELLO WORLD")
 	fmt.Println(enc)
 	fmt.Println(c.DecryptMessage(enc))
 	fmt.Println()

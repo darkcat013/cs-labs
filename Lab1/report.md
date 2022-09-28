@@ -41,8 +41,9 @@ Caesar's cipher is very easy to crack, so it is a very weak cipher. Thus, a cryp
 
 In the Polybius cipher, a separate encryption square is built for each alphabet, most often with the same number of columns and lines (but this is not a necessary condition). Square dimensions depend on the length n of the alphabet. To create the square, two integers are taken, the product of which is closest to n. The lines and columns are numbered. After this the letters of the alphabet are written in this box in their natural order. If there are not enough cells for the letters of the alphabet, 2 letters can be entered in a cell or a few letters can be omitted (usually with the lowest possible frequency). For the Latin alphabet, we can have Polibios 5×5 squares by placing I and J in the same square.
 
-|   | m | o | u | s   | e |
+|||||||
 |---|---|---|---|-----|---|
+|   | m | o | u | s   | e |
 | m | A | B | C | D   | E |
 | u | F | G | H | I/J | K |
 | s | L | M | N | O   | P |
@@ -80,8 +81,42 @@ The Vigenere cipher is a lot safer than the Caesar cipher for two reasons:
 
 ### Homophonic ciphers
 
-The homophonic ciphers are intermediate ciphers between mono and polyalphabetic systems. Its main purpose is to avoid the attack by the frequency of appearance of the characters.
+The homophonic ciphers are intermediate ciphers between mono and polyalphabetic systems. Its main purpose is to avoid the attack by the frequency of appearance of the characters. The idea used in these ciphers is the uniformization of frequencies of the appearance of the characters of the digit text (secondary alphabet), in order to make it difficult to cryptanalytic attacks. Thus, the letter A - with the highest frequency of occurrence in the primary alphabet - can be replaced for example with H, # or M.
 
+### Polygraphic substitution
+
+Polygraphic substitution is achieved by substituting blocks (polygrams) in the clear text instead of single letters, thus destroying the meaning, so useful in cryptanalysis, the frequencies of different characters.
+
+In the case of the singular letters, the frequency of the letters in the number of the text is equal to the frequency of the corresponding letters in the clear text. This invariance of frequencies provides an amount of information sufficiently to the cryptanalyst to break the figure. To minimize the collateral information provided by the frequency of appearance of the letters, the number of $d$ groups (d-grams) was used. If a group of $d$ letters is substituted by another group of letters, the substitution is called polygraphic. The simplest polygraphic substitution is obtained for $d = 2$ when the $m_1m_2$ d-gram in the clear text is substituted with the $c_1c_2$ d-gram in the encrypted text.
+
+### The Playfair cipher
+
+A classic example for d-grams substitution is Playfair cipher.
+||||||
+|-----|---|---|---|---|
+| P   | L | A | Y | F |
+| I/J | R | B | C | D |
+| E   | G | H | K | M |
+| N   | O | Q | S | T |
+| U   | V | W | X | Z |
+
+The first letters in the above square (in general case - a rectangle) represent a keyword $k$ (the letters that are repeated are written once, in this example the key being $k= Playfair$), after which the square is completed with the letters of the alphabet in their natural order , without repetition. Then the encryption is executed according to the following rules:
+
+- The plaintext is separated in d-grams (pairs of letters)
+
+- A pair cannot have identical letter so for the separation of the identical letters, some separation characters are introduced which, as a rule, have a reduced occurrence frequency, such as the letter X. If the number of characters in the plaintext is odd, such a letter is added at the end of it. When deciphering, these added letters are omitted.
+
+- If $m_1$ and $m_2$ are in the same column in the above square then $c_1$ and $c_2$ are obtained by a cyclical displacement of $m_1$ and $m_2$ from top to bottom. For example AH → BQ and OV → VL;
+
+- If $m_1$ and $m_2$ are in the same row, then $c_1$ and $c_2$ are obtained by a cyclical movement to the right of the letters $m_1$ and $m_2$. For example PA → LY and NO → OQ;
+
+- If $m_1$ and $m_2$ are not in the same line or column, then $c_1$ and $c_2$ are the characters in the intersection of the line and columns. For example RK → CG and PZ → FU;
+
+The deciphering is executed according to the rules similar to those of encryption, reversing the direction.
+
+Using the example above ($k = Playfair$) for the clear text m = "Hello world" we obtain the encrypted text $c = KG\ YV\ RV\ VQ\ GR\ CZ$. Here we introduced between letters $ll$ the letter X and an extra letter X at the end because the amount of characters of the plaintext in this case becomes odd. When deciphering according to the meaning of the message, the letter X is omitted.
+
+The use of the Playfair cipher currently does not make sense because modern laptops can easily break the cipher in seconds.
 ## Objectives
 
 1. Get familiar with the basics of cryptography and classical ciphers.
@@ -96,17 +131,93 @@ The homophonic ciphers are intermediate ciphers between mono and polyalphabetic 
 
 ## Implementation description
 
-- About 2-3 sentences to explain each piece of the implementation.
+All the ciphers in this laboratory work implement the Cipher interface in the interfaces directory. Some tests for each cipher are also provided.
 
-- Code snippets from your files.
+### Caesar cipher
 
+This is the simplest one to implement, just get the position of the letter of the plaintext in alphabet by subtracting it's ASCII code with the ASCII code of letter A and use the formula for the Caesar cipher.
+
+```go
+letterPos := int(s[i]) - constants.ASCII_A
+encPos := (letterPos + c.Key) % constants.ALPHABET_LEN
+enc += string(constants.ALPHABET[encPos])
 ```
-public static void main() 
-{
+For decryption, replace the addition with subtraction and make sure the mod operation to not give negative result by adding the length of the alphabet of it.
 
+```go
+letterPos := int(s[i]) - constants.ASCII_A
+decPos := (letterPos - c.Key + constants.ALPHABET_LEN) % constants.ALPHABET_LEN
+dec += string(constants.ALPHABET[decPos])
+```
+
+### Polybius cipher
+
+This cipher gets two words as input, the key for the columns and the key for the rows in the table above. For the encryption, each letter of the plaintext is replaced with 2 letters, column letter and row letter. 
+
+```go
+val := string(p.ColumnKey[letterPos%5]) + string(p.RowKey[letterPos/5])
+enc += string(val)
+```
+
+For the decryption, each pair of letters is replaced with the matching letter in the table, by using the first letter as the column and the second letter as the row.
+
+```go
+dec += string(matrix[s[i+1]][s[i]])
+```
+
+### Vigenere cipher
+
+This cipher is similar to the Caesar cipher in implementation but instead of having a fixed key, the key is a word and each letter has its position in alphabet, so use that position instead of the fixed key in the Caesar cipher. Be careful to start over each time the end of the key word is reached (using mod operator).
+
+```go
+letterPos := int(s[i]) - constants.ASCII_A
+keyLetterPos := int(c.Key[i%len(c.Key)]) - constants.ASCII_A
+encPos := (letterPos + keyLetterPos) % constants.ALPHABET_LEN
+enc += string(constants.ALPHABET[encPos])
+```
+
+For the decryption, use the same logic as with Caesar, replace the addition with subtraction and make sure the result of the mod to not be negative
+
+```go
+letterPos := int(s[i]) - constants.ASCII_A
+keyLetterPos := int(c.Key[i%len(c.Key)]) - constants.ASCII_A
+decPos := (letterPos - keyLetterPos + constants.ALPHABET_LEN) % constants.ALPHABET_LEN
+dec += string(constants.ALPHABET[decPos])
+```
+
+### Playfair cipher
+
+At first, the square with the alphabet and the key needs to be generated, remove the current key letter from the alphabet and add the letters from the key(starting from the end) to the alphabet:
+
+```go
+for i := len(pf.Key) - 1; i >= 0; i-- {
+	newAlpha = string(pf.Key[i]) 
+        + strings.ReplaceAll(newAlpha, string(pf.Key[i]), "")
 }
+newAlpha = strings.ReplaceAll(newAlpha, "J", "")
 ```
 
-- If needed, screenshots.
+For encryption, take each pair of letters and follow the cipher's algorithm, in this case it is done in the encryptDigraph function. Also add an additional letter if the letters in the pair are the same and add a letter in the end if the plaintext has an odd amount of characters.
 
-## Conclusions / Screenshots / Results
+```go
+if i+1 == len(s) {
+	s += constants.RARE_LETTER
+	enc += encryptDigraph(newAlpha, s[i], s[i+1]) + " "
+	break
+}
+
+if s[i] == s[i+1] {
+	s = s[:i+1] + constants.RARE_LETTER + s[i+1:]
+}
+enc += encryptDigraph(newAlpha, s[i], s[i+1]) + " "
+```
+
+For decryption, just do the encryption in the reverse order, in this case it is done in decryptDigraph function.
+
+```go
+dec += decryptDigraph(newAlpha, s[i], s[i+1])
+```
+
+## Conclusions
+
+In conclusion, this laboratory work was a pretty simple and interesting one. Even if I knew some classical ciphers before doing this laboratory work, it allowed me to dive deeper into the theory behind them and ultimately making my knowledge foundation stronger.
