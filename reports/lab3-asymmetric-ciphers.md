@@ -12,7 +12,7 @@
 
 &ensp;&ensp;&ensp; As the name implies, the public key is available to the public but the private one is available only to the authenticated recipients
 
-&ensp;&ensp;&ensp; A popular use case of the asymmetric encryption is in SSL/TLS certificates along side symmetric encryption mechanisms. It is necessary to use both types of encryption because asymmetric ciphers are computationally expensive, so these are usually used for the communication initiation and key exchange, or sometimes called handshake. The messages after that are encrypted with symmetric ciphers.
+&ensp;&ensp;&ensp; A popular use case of the asymmetric encryption is in SSL/TLS certificates along side symmetric encryption mechanisms. It is necessary to use both types of encryption because asymmetric ciphers are computationally expensive, so these are usually used for the communication initiation and key exchange, or sometimes called handshake. The messages after that are encrypted with symmetric ciphers.[[1]](https://github.com/DrVasile/CS-Labs/blob/master/LaboratoryWork3/laboratoryWork3Task.md)
 
 ### Examples
 
@@ -115,3 +115,7 @@ Message: hello
 Encrypted: �♀�����.
 
 Decrypted: hello
+
+## References
+
+[1] <https://github.com/DrVasile/CS-Labs/blob/master/LaboratoryWork3/laboratoryWork3Task.md>

@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	"github.com/darkcat013/cs-labs/ciphers"
-	"github.com/darkcat013/cs-labs/interfaces"
+	ciphers "github.com/darkcat013/cs-labs/classic-ciphers"
+	"github.com/darkcat013/cs-labs/classic-ciphers/interfaces"
 )
 
 func TestVigenere1(t *testing.T) {

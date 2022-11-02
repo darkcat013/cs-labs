@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/darkcat013/cs-labs/ciphers"
+	ciphers "github.com/darkcat013/cs-labs/asymmetric-ciphers"
 )
 
 func TestEncryptDecrypt(t *testing.T) {
