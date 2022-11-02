@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"fmt"
 
-	"github.com/darkcat013/cs-labs/ciphers"
+	ciphers "github.com/darkcat013/cs-labs/asymmetric-ciphers"
 )
 
 func main() {

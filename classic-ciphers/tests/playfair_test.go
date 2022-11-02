@@ -3,19 +3,18 @@ package tests
 import (
 	"testing"
 
-	"github.com/darkcat013/cs-labs/ciphers"
-	"github.com/darkcat013/cs-labs/interfaces"
+	ciphers "github.com/darkcat013/cs-labs/classic-ciphers"
+	"github.com/darkcat013/cs-labs/classic-ciphers/interfaces"
 )
 
-func TestPolybius1(t *testing.T) {
+func TestPlayfair1(t *testing.T) {
 	//Arrange
-	msg := "VENI VIDI VICI"
-	expectedEnc := "MA EM US SU MA SU SM SU MA SU UM SU"
-	expectedDec := "VENIVIDIVICI"
+	msg := "VINE IARNA"
+	expectedEnc := "UR UN BP IO YW"
+	expectedDec := "VINEIARNAX"
 
-	var c interfaces.Cipher = ciphers.PolybiusEnglish{
-		ColumnKey: "mouse",
-		RowKey:    "musca",
+	var c interfaces.Cipher = ciphers.Playfair{
+		Key: "PLAYFAIR",
 	}
 
 	//Act
@@ -31,15 +30,14 @@ func TestPolybius1(t *testing.T) {
 	}
 }
 
-func TestPolybius2(t *testing.T) {
+func TestPlayfair2(t *testing.T) {
 	//Arrange
-	msg := "Playfair cipher"
-	expectedEnc := "53 13 11 45 12 11 42 24 31 42 53 32 51 24"
-	expectedDec := "PLAYFAIRCIPHER"
+	msg := "Hello world cool goodbyey asd"
+	expectedEnc := "OC NV UG YH SU ED KY GU HQ KE EV OR RT KA"
+	expectedDec := "HELXLOWORLDCOXOLGOODBYEYASDX"
 
-	var c interfaces.Cipher = ciphers.PolybiusEnglish{
-		ColumnKey: "12345",
-		RowKey:    "12345",
+	var c interfaces.Cipher = ciphers.Playfair{
+		Key: "StarPlatinum",
 	}
 
 	//Act

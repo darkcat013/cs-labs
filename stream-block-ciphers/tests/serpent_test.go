@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	"github.com/darkcat013/cs-labs/ciphers"
-	"github.com/darkcat013/cs-labs/interfaces"
+	ciphers "github.com/darkcat013/cs-labs/stream-block-ciphers"
+	"github.com/darkcat013/cs-labs/stream-block-ciphers/interfaces"
 )
 
 func TestSerpent1(t *testing.T) {

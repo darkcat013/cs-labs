@@ -3,7 +3,7 @@ package ciphers
 import (
 	"strings"
 
-	"github.com/darkcat013/cs-labs/constants"
+	"github.com/darkcat013/cs-labs/classic-ciphers/constants"
 )
 
 type Vigenere struct {
