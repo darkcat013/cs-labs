@@ -8,8 +8,9 @@ go run .
 
 ## Run tests
 
-```pwsh
+```
 go test ./classic-ciphers/tests
 go test ./stream-block-ciphers/tests
 go test ./asymmetric-ciphers/tests
+go test ./hash-func-and-digital-sign/tests
 ```

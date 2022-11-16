@@ -1,28 +1,37 @@
 package main
 
 import (
-	"crypto/rand"
-	"fmt"
-
-	ciphers "github.com/darkcat013/cs-labs/asymmetric-ciphers"
+	"github.com/darkcat013/cs-labs/hash-func-and-digital-sign/database"
+	"github.com/darkcat013/cs-labs/hash-func-and-digital-sign/services"
 )
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
 
 func main() {
 
-	rsa, err := ciphers.GenerateRSAKeys(rand.Reader, 64)
-	if err != nil {
-		panic(err)
-	}
+	db := database.NewDatabase()
+	userService := services.NewUserService(db)
 
-	fmt.Println("Private key: ", rsa.D, rsa.N)
-	fmt.Println("Public key: ", rsa.E, rsa.N)
+	err := userService.Register("darkcat", "villv013")
+	check(err)
 
-	msg := "hello"
-	fmt.Println("Message: " + msg)
+	err = userService.Register("darkcat1", "villv01333")
+	check(err)
 
-	c := rsa.EncryptMessage(msg)
-	fmt.Println("Encrypted: " + c)
+	user, err := userService.Login("darkcat", "villv013")
+	check(err)
 
-	m := rsa.DecryptMessage(c)
-	fmt.Println("Decrypted: " + m)
+	user1, err := userService.Login("darkcat1", "villv01333")
+	check(err)
+
+	messageService := services.NewMessageService()
+	hashedMessage, signature, err := messageService.NewMessage(user, "Very important message")
+	check(err)
+
+	err = messageService.CheckMessage(&user1.Key.PublicKey, hashedMessage, signature)
+	check(err)
 }
